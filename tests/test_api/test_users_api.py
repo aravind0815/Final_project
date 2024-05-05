@@ -53,6 +53,18 @@ async def test_update_user_email_access_allowed(async_client, admin_user, admin_
     assert response.json()["email"] == updated_data["email"]
 
 @pytest.mark.asyncio
+async def test_update_URL_test14(async_client, admin_user, admin_token):
+    updated_data = {
+        "email": f"updated_{admin_user.id}@example.com",
+        "github_profile_url": ""
+        }
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    response = await async_client.put(f"/users/{admin_user.id}", json=updated_data, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["github_profile_url"] == None
+
+
+@pytest.mark.asyncio
 async def test_update_user_email_access_Not_allowed_test2(async_client, admin_user, verified_user, admin_token):
     updated_data = {"email": f"updated_{admin_user.id}@example.com"}
     headers = {"Authorization": f"Bearer {admin_token}"}
@@ -113,7 +125,7 @@ async def test_create_user_sns_test5(async_client, verified_user):
     response = await async_client.post("/register/", json=user_data)
     assert response.status_code == 200
     assert "https://github.com/johndoe" in response.json().get("github_profile_url", "")
-    
+
 @pytest.mark.asyncio
 async def test_create_user_invalid_email(async_client):
     user_data = {
